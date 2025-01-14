@@ -1,0 +1,48 @@
+from ultralytics import YOLO
+import cv2
+from ultralytics.utils.plotting import Annotator  # Импорт Annotator
+from google.colab.patches import cv2_imshow
+from google.colab import files
+
+# Загрузка модели
+model = YOLO('yolov8n.pt')
+
+# Загрузка изображения
+uploaded = files.upload()
+img = cv2.imread('ctolik.webp')
+
+# Предсказание
+results = model.predict(img)
+
+# Счетчики для стульев и столов
+chair_count = 0
+table_count = 0
+
+# Обработка результатов
+for r in results:
+    annotator = Annotator(img)  # Создаем объект Annotator
+    boxes = r.boxes
+    for box in boxes:
+        b = box.xyxy[0]  # Координаты bounding box
+        c = box.cls      # Класс объекта
+        label = model.names[int(c)]  # Название класса
+
+        # Подсчет стульев и столов
+        if label == 'chair':
+            chair_count += 1
+        elif label == 'dining table':
+            table_count += 1
+
+        # Аннотирование изображения
+        annotator.box_label(b, label)
+
+# Добавление текста с количеством стульев и столов на изображение
+text = f'Chairs: {chair_count}, Tables: {table_count}'
+
+# Отображение результата
+img = annotator.result()
+cv2_imshow(img)
+
+# Вывод количества в консоль
+print(f"Количество стульев: {chair_count}")
+print(f"Количество столов: {table_count}")
