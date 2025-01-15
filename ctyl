@@ -1,6 +1,6 @@
 from ultralytics import YOLO
 import cv2
-from ultralytics.utils.plotting import Annotator  # Импорт Annotator
+from ultralytics.utils.plotting import Annotator
 from google.colab.patches import cv2_imshow
 from google.colab import files
 
@@ -15,12 +15,12 @@ chair_count = 0
 table_count = 0
 
 for r in results:
-    annotator = Annotator(img)  # Создаем объект Annotator
+    annotator = Annotator(img)
     boxes = r.boxes
     for box in boxes:
-        b = box.xyxy[0]  # Координаты bounding box
-        c = box.cls      # Класс объекта
-        label = model.names[int(c)]  # Название класса
+        b = box.xyxy[0]
+        c = box.cls
+        label = model.names[int(c)]
 
         if label == 'chair':
             chair_count += 1
